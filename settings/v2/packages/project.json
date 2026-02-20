@@ -7,5 +7,22 @@
       "height": 1280,
       "width": 1280
     }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "player"
+      },
+      {
+        "index": 2,
+        "name": "damagable_objects"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 3,
+      "1": 5,
+      "2": 6
+    }
   }
 }

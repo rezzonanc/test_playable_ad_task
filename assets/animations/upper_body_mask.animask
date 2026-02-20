@@ -192,7 +192,7 @@
   {
     "__type__": "cc.JointMask",
     "path": "Armature.001/Hips/UpperLeg_L",
-    "enabled": false
+    "enabled": true
   },
   {
     "__type__": "cc.JointMask",
@@ -207,7 +207,7 @@
   {
     "__type__": "cc.JointMask",
     "path": "Armature.001/Hips/UpperLeg_R",
-    "enabled": false
+    "enabled": true
   },
   {
     "__type__": "cc.JointMask",

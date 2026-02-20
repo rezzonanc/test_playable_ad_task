@@ -224,7 +224,7 @@
     "__prefab": {
       "__id__": 10
     },
-    "_group": 1,
+    "_group": 4,
     "_type": 2,
     "_mass": 1,
     "_allowSleep": true,
@@ -290,6 +290,7 @@
       "__id__": 0
     },
     "fileId": "8cfOOcT6FPUJbGohVQ2Dek",
+    "instance": null,
     "targetOverrides": null
   }
 ]

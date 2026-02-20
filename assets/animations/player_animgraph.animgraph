@@ -15,10 +15,10 @@
     ],
     "_variables": {
       "is_running": {
-        "__id__": 39
+        "__id__": 44
       },
       "punch": {
-        "__id__": 40
+        "__id__": 45
       }
     }
   },
@@ -310,7 +310,7 @@
       "__id__": 26
     },
     "name": "action",
-    "weight": 1,
+    "weight": 0.85,
     "mask": {
       "__uuid__": "5e00ebc7-f5a5-44ca-98d4-3c63727e7344",
       "__expectedType__": "cc.animation.AnimationMask"
@@ -339,12 +339,18 @@
         "__id__": 30
       },
       {
-        "__id__": 31
+        "__id__": 34
       }
     ],
     "_transitions": [
       {
         "__id__": 35
+      },
+      {
+        "__id__": 37
+      },
+      {
+        "__id__": 40
       }
     ],
     "_entryState": {
@@ -391,17 +397,6 @@
     "name": "Any"
   },
   {
-    "__type__": "cc.animation.EmptyState",
-    "__editorExtras__": {
-      "name": "",
-      "id": "e2a83816-bc36-472a-8050-e34016f5df1f",
-      "clone": null,
-      "centerX": -107.5,
-      "centerY": 71
-    },
-    "name": "Empty"
-  },
-  {
     "__type__": "cc.animation.Motion",
     "__editorExtras__": {
       "name": "",
@@ -413,16 +408,16 @@
     "name": "Armature.001|Armature.001|Armature.001|Armature.001|AXE",
     "_components": [],
     "motion": {
-      "__id__": 32
+      "__id__": 31
     },
     "speed": 1,
     "speedMultiplier": "",
     "speedMultiplierEnabled": false,
     "transitionInEventBinding": {
-      "__id__": 33
+      "__id__": 32
     },
     "transitionOutEventBinding": {
-      "__id__": 34
+      "__id__": 33
     }
   },
   {
@@ -446,26 +441,87 @@
     "methodName": ""
   },
   {
-    "__type__": "cc.animation.EmptyStateTransition",
+    "__type__": "cc.animation.EmptyState",
+    "__editorExtras__": {
+      "name": "",
+      "id": "5585caf8-4977-455d-8352-43b29772fdb4",
+      "clone": null,
+      "centerX": -207.82653061224488,
+      "centerY": 72.89795918367349
+    },
+    "name": "Empty"
+  },
+  {
+    "__type__": "cc.animation.Transition",
     "__editorExtras__": null,
     "from": {
-      "__id__": 30
+      "__id__": 27
     },
     "to": {
-      "__id__": 31
+      "__id__": 30
     },
     "conditions": [
       {
         "__id__": 36
       }
+    ]
+  },
+  {
+    "__type__": "cc.animation.TriggerCondition",
+    "trigger": "punch"
+  },
+  {
+    "__type__": "cc.animation.AnimationTransition",
+    "__editorExtras__": null,
+    "from": {
+      "__id__": 30
+    },
+    "to": {
+      "__id__": 34
+    },
+    "conditions": [],
+    "destinationStart": 0,
+    "relativeDestinationStart": false,
+    "startEventBinding": {
+      "__id__": 38
+    },
+    "endEventBinding": {
+      "__id__": 39
+    },
+    "duration": 0.2,
+    "relativeDuration": false,
+    "exitConditionEnabled": true,
+    "_exitCondition": 0.7
+  },
+  {
+    "__type__": "cc.animation.AnimationGraphEventBinding",
+    "methodName": ""
+  },
+  {
+    "__type__": "cc.animation.AnimationGraphEventBinding",
+    "methodName": ""
+  },
+  {
+    "__type__": "cc.animation.EmptyStateTransition",
+    "__editorExtras__": null,
+    "from": {
+      "__id__": 34
+    },
+    "to": {
+      "__id__": 30
+    },
+    "conditions": [
+      {
+        "__id__": 41
+      }
     ],
     "destinationStart": 0,
     "relativeDestinationStart": false,
     "startEventBinding": {
-      "__id__": 37
+      "__id__": 42
     },
     "endEventBinding": {
-      "__id__": 38
+      "__id__": 43
     },
     "duration": 0.2
   },
@@ -488,6 +544,6 @@
   },
   {
     "__type__": "cc.animation.TriggerVariable",
-    "_flags": 0
+    "_flags": 2
   }
 ]
