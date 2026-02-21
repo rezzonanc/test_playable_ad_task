@@ -39,7 +39,7 @@ export class run_state implements player_state {
             player.change_state(new idle_state())
         }
         if (player.can_punch()) {
-            player.play_action(player.punch_action_state);
+            player.play_punch_action(player.punch_action_state);
         }
     }
 

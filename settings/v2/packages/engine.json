@@ -54,7 +54,7 @@
             "_value": true
           },
           "particle": {
-            "_value": false
+            "_value": true
           },
           "physics": {
             "_value": true,
@@ -113,7 +113,7 @@
             "_value": false
           },
           "debug-renderer": {
-            "_value": false
+            "_value": true
           },
           "particle-2d": {
             "_value": false
@@ -197,8 +197,10 @@
           "audio",
           "base",
           "custom-pipeline",
+          "debug-renderer",
           "gfx-webgl",
           "marionette",
+          "particle",
           "physics-ammo",
           "primitive",
           "procedural-animation",

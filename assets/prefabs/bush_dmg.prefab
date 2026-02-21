@@ -145,7 +145,7 @@
       "__uuid__": "9994ae3f-0dd4-4c42-8566-ae6cd1ebbab3@27ee6",
       "__expectedType__": "cc.Mesh"
     },
-    "_shadowCastingMode": 0,
+    "_shadowCastingMode": 1,
     "_shadowReceivingMode": 1,
     "_shadowBias": 0,
     "_shadowNormalBias": 0,
@@ -266,7 +266,7 @@
       "__uuid__": "9994ae3f-0dd4-4c42-8566-ae6cd1ebbab3@724e8",
       "__expectedType__": "cc.Mesh"
     },
-    "_shadowCastingMode": 0,
+    "_shadowCastingMode": 1,
     "_shadowReceivingMode": 1,
     "_shadowBias": 0,
     "_shadowNormalBias": 0,
@@ -387,7 +387,7 @@
       "__uuid__": "9994ae3f-0dd4-4c42-8566-ae6cd1ebbab3@2fcd0",
       "__expectedType__": "cc.Mesh"
     },
-    "_shadowCastingMode": 0,
+    "_shadowCastingMode": 1,
     "_shadowReceivingMode": 1,
     "_shadowBias": 0,
     "_shadowNormalBias": 0,
@@ -460,6 +460,7 @@
         "__id__": 12
       }
     ],
+    "max_hit_angle_offset": 10,
     "_id": ""
   },
   {

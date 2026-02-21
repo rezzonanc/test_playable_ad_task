@@ -7,6 +7,7 @@ import { damagable_object_component } from '../damagable_object_component';
 import { punch_state } from './states/punch_state';
 import { weapon_component } from './weapon_component';
 import { main_canvas_script } from '../ui_scripts/main_canvas_script';
+import { camera_behavior } from './camera_behavior';
 
 const { ccclass, property } = _decorator;
 
@@ -52,15 +53,31 @@ export class player_controller extends Component {
     @property(weapon_component)
     private weapon: weapon_component
 
+    @property(CCFloat)
+    private draw_trail_period: number = 0.2
+    private draw_trail_timer: number
+    private draw_trail: boolean = false
+
+    @property(camera_behavior)
+    private cam: camera_behavior
+
+    @property(CCFloat)
+    private shake_cam_dur: number
+
+    @property(CCFloat)
+    private shake_cam_strength: number
+    
+    
     start() {
         this.change_state(new idle_state())
-        this.punch_trigger_zone.on('onTriggerEnter', this.on_enter_punch_trigger, this);
-        this.punch_trigger_zone.on('onTriggerExit', this.on_exit_punch_trigger, this);
+        this.punch_trigger_zone.on('onTriggerEnter', this.on_enter_punch_trigger, this)
+        this.punch_trigger_zone.on('onTriggerExit', this.on_exit_punch_trigger, this)
+        this.draw_trail_timer = this.draw_trail_period
     }
     
     onDestroy() {
-        this.punch_trigger_zone.off('onTriggerEnter', this.on_enter_punch_trigger, this);
-        this.punch_trigger_zone.off('onTriggerExit', this.on_exit_punch_trigger, this);
+        this.punch_trigger_zone.off('onTriggerEnter', this.on_enter_punch_trigger, this)
+        this.punch_trigger_zone.off('onTriggerExit', this.on_exit_punch_trigger, this)
     }
 
     update(deltaTime: number) {
@@ -69,8 +86,21 @@ export class player_controller extends Component {
             this.current_state.uupdate(this, deltaTime)
         }
 
+        this.handle_timers(deltaTime)
+
+        if(this.draw_trail && this.draw_trail_timer <= 0){
+            this.draw_trail_timer = this.draw_trail_period
+            this.weapon.draw_trail()
+        }
+    }
+
+    private handle_timers(dt: number){
         if (this.punch_cooldown_timer > 0) {
-            this.punch_cooldown_timer -= deltaTime
+            this.punch_cooldown_timer -= dt
+        }
+
+        if (this.draw_trail_timer > 0) {
+            this.draw_trail_timer -= dt
         }
     }
 
@@ -85,7 +115,7 @@ export class player_controller extends Component {
             this.anim_controller.setValue(name, value)
         }
     }
-    public play_action(action: player_state) {
+    public play_punch_action(action: player_state) {
         action.enter(this)
     }
 
@@ -121,10 +151,12 @@ export class player_controller extends Component {
             const wpn_lvl = this.weapon.cur_lvl
 
             let wpn_dmg = this.weapon.damage_per_level[wpn_lvl - 1]
-            wpn_dmg += randomRangeInt(0, wpn_dmg * 1.2)
+            wpn_dmg = randomRangeInt(wpn_dmg, wpn_dmg * 1.15)
+
+            this.cam.shake(this.shake_cam_dur, this.shake_cam_strength)
 
             this.damagable_objects.forEach(obj => {
-                obj.getComponent(damagable_object_component).damage_obj(wpn_dmg, wpn_lvl)
+                obj.getComponent(damagable_object_component).damage_obj(wpn_dmg, wpn_lvl, this.node.getWorldPosition())
                 this.main_canvas.spawn_label_dmg(obj.node.getWorldPosition(), wpn_dmg.toString())
             })
 
@@ -132,5 +164,16 @@ export class player_controller extends Component {
             console.log("miss")
         }
     }
+
+    public start_trail(){
+        this.weapon.reset_trail()
+        this.draw_trail = true
+    }
+
+    public stop_trail_render(){
+        this.draw_trail = false
+        this.weapon.reset_trail()
+    }
+
     //#endregion
 }
