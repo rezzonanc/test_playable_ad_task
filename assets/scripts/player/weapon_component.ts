@@ -1,4 +1,4 @@
-import { _decorator, CCFloat, Component, Enum, Node } from 'cc';
+import { _decorator, CCFloat, CCInteger, Component, Enum, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 
@@ -9,6 +9,9 @@ export class weapon_component extends Component {
 
     @property([Node])
     public weapon_per_level: Node[] = []
+    
+    @property(CCInteger)
+    public cur_lvl: number = 1
     
     protected onLoad(): void {
         for (let i = 1; i < this.weapon_per_level.length; i++) {

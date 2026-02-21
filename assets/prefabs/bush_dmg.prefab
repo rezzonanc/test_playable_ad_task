@@ -448,8 +448,11 @@
       "__id__": 18
     },
     "access_lvl": 1,
-    "max_hp": 5,
+    "max_hp": 200,
     "damagable_meshes": [
+      {
+        "__id__": 2
+      },
       {
         "__id__": 7
       },

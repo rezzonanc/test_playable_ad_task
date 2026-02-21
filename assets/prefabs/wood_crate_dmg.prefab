@@ -451,6 +451,9 @@
     "max_hp": 10,
     "damagable_meshes": [
       {
+        "__id__": 2
+      },
+      {
         "__id__": 7
       },
       {

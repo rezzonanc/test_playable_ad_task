@@ -16,14 +16,22 @@ export class damagable_object_component extends Component {
 
     protected onLoad(): void {
         this.hp = this.max_hp
-        this.damagable_meshes.forEach(obj => {
-            obj.active = false
-        });
+        
+        for (let i = 0; i < this.damagable_meshes.length; i++) {
+            this.damagable_meshes[i + 1].active = false
+            
+        }
     }
 
-    public damage_obj(damage: number){
+    public damage_obj(damage: number, weapon_lvl: number){
+        if(weapon_lvl < this.access_lvl)
+            return
+        
         this.hp -= damage
 
+        if(this.hp <= 0){
+            this.node.destroy()
+        }
     }
 }
 

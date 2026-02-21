@@ -1,10 +1,12 @@
-import { _decorator, animation, BoxCollider, CapsuleCharacterController, CCFloat, Component, ITriggerEvent, SkeletalAnimation, Vec3 } from 'cc';
+import { _decorator, animation, BoxCollider, CapsuleCharacterController, CCFloat, Component, ITriggerEvent, randomRange, randomRangeInt, SkeletalAnimation, Vec3 } from 'cc';
 import { player_state } from './states/player_state';
 import { idle_state } from './states/idle_state';
 import { input_handler } from './input_handler';
 import { joystick_behavior } from './joystick_behavior';
 import { damagable_object_component } from '../damagable_object_component';
 import { punch_state } from './states/punch_state';
+import { weapon_component } from './weapon_component';
+import { main_canvas_script } from '../ui_scripts/main_canvas_script';
 
 const { ccclass, property } = _decorator;
 
@@ -13,11 +15,14 @@ export class player_controller extends Component {
 
     private current_state: player_state
 
+    @property(main_canvas_script)
+    private readonly main_canvas: main_canvas_script
+
     @property(input_handler)
     public readonly inputt: input_handler
     
     @property(joystick_behavior)
-    public joystick: joystick_behavior
+    public readonly joystick: joystick_behavior
 
     @property(animation.AnimationController)
     public anim_controller: animation.AnimationController
@@ -44,6 +49,8 @@ export class player_controller extends Component {
     private punch_cooldown_timer: number = 0
     public punch_action_state: punch_state = new punch_state()
     
+    @property(weapon_component)
+    private weapon: weapon_component
 
     start() {
         this.change_state(new idle_state())
@@ -109,8 +116,18 @@ export class player_controller extends Component {
     }
 
     public on_punch_hit() {
-        if (this.damagable_objects) {
-            console.log("hit")
+        if (this.damagable_objects.length > 0) {
+
+            const wpn_lvl = this.weapon.cur_lvl
+
+            let wpn_dmg = this.weapon.damage_per_level[wpn_lvl - 1]
+            wpn_dmg += randomRangeInt(0, wpn_dmg * 1.2)
+
+            this.damagable_objects.forEach(obj => {
+                obj.getComponent(damagable_object_component).damage_obj(wpn_dmg, wpn_lvl)
+                this.main_canvas.spawn_label_dmg(obj.node.getWorldPosition(), wpn_dmg.toString())
+            })
+
         } else {
             console.log("miss")
         }
