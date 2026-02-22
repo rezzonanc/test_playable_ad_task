@@ -1,13 +1,13 @@
-import { _decorator, animation, BoxCollider, CapsuleCharacterController, CCFloat, Component, ITriggerEvent, randomRange, randomRangeInt, SkeletalAnimation, Vec3 } from 'cc';
+import { _decorator, animation, BoxCollider, CapsuleCharacterController, CCFloat, Component, ITriggerEvent, randomRangeInt, Vec3 } from 'cc';
 import { player_state } from './states/player_state';
 import { idle_state } from './states/idle_state';
 import { input_handler } from './input_handler';
 import { joystick_behavior } from './joystick_behavior';
-import { damagable_object_component } from '../damagable_object_component';
+import { damagable_object_component } from '../damagable_objects_scripts/damagable_object_component';
 import { punch_state } from './states/punch_state';
 import { weapon_component } from './weapon_component';
-import { main_canvas_script } from '../ui_scripts/main_canvas_script';
 import { camera_behavior } from './camera_behavior';
+import { game_manager } from '../game_manager';
 
 const { ccclass, property } = _decorator;
 
@@ -15,9 +15,6 @@ const { ccclass, property } = _decorator;
 export class player_controller extends Component {
 
     private current_state: player_state
-
-    @property(main_canvas_script)
-    private readonly main_canvas: main_canvas_script
 
     @property(input_handler)
     public readonly inputt: input_handler
@@ -28,8 +25,7 @@ export class player_controller extends Component {
     @property(animation.AnimationController)
     public anim_controller: animation.AnimationController
 
-    @property(CapsuleCharacterController)
-    public readonly char_ctrl: CapsuleCharacterController
+    public character_controller: CapsuleCharacterController
 
     @property(BoxCollider)
     public punch_trigger_zone: BoxCollider
@@ -72,7 +68,9 @@ export class player_controller extends Component {
         this.change_state(new idle_state())
         this.punch_trigger_zone.on('onTriggerEnter', this.on_enter_punch_trigger, this)
         this.punch_trigger_zone.on('onTriggerExit', this.on_exit_punch_trigger, this)
+
         this.draw_trail_timer = this.draw_trail_period
+        this.character_controller = this.getComponent(CapsuleCharacterController)
     }
     
     onDestroy() {
@@ -92,6 +90,7 @@ export class player_controller extends Component {
             this.draw_trail_timer = this.draw_trail_period
             this.weapon.draw_trail()
         }
+
     }
 
     private handle_timers(dt: number){
@@ -115,14 +114,18 @@ export class player_controller extends Component {
             this.anim_controller.setValue(name, value)
         }
     }
-    public play_punch_action(action: player_state) {
+    
+    public play_action(action: player_state) {
         action.enter(this)
     }
 
     //#region  punch
     private on_enter_punch_trigger(event: ITriggerEvent) {
         const comp = event.otherCollider.node.getComponent(damagable_object_component)
-        if (comp && this.damagable_objects.indexOf(comp) === -1) {
+
+        const wpn_lvl = this.weapon.cur_lvl
+
+        if (comp && this.damagable_objects.indexOf(comp) === -1 && comp.access_lvl <= wpn_lvl) {
             this.damagable_objects.push(comp)
         }
     }
@@ -139,6 +142,7 @@ export class player_controller extends Component {
             this.damagable_objects = this.damagable_objects.filter(obj => obj && obj.node && obj.node.isValid)
         }
         if (this.damagable_objects.length > 0 && this.punch_cooldown_timer <= 0) {
+
             this.punch_cooldown_timer = this.punch_cooldown
             return true
         }
@@ -156,12 +160,16 @@ export class player_controller extends Component {
             this.cam.shake(this.shake_cam_dur, this.shake_cam_strength)
 
             this.damagable_objects.forEach(obj => {
-                obj.getComponent(damagable_object_component).damage_obj(wpn_dmg, wpn_lvl, this.node.getWorldPosition())
-                this.main_canvas.spawn_label_dmg(obj.node.getWorldPosition(), wpn_dmg.toString())
+
+                var obj_comp = obj.getComponent(damagable_object_component)
+
+                if(obj_comp.access_lvl <= wpn_lvl){
+                    obj_comp.damage_obj(wpn_dmg, this.node.getWorldPosition())
+                    game_manager.instance.spawn_label_dmg(obj.node.getWorldPosition(), wpn_dmg.toString())
+                }
+                
             })
 
-        } else {
-            console.log("miss")
         }
     }
 
@@ -176,4 +184,6 @@ export class player_controller extends Component {
     }
 
     //#endregion
+
+
 }

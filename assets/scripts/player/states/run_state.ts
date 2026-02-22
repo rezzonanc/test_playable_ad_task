@@ -2,7 +2,6 @@ import { _decorator, Component, math, Node, Quat, Vec3 } from 'cc';
 import { player_state } from './player_state';
 import { player_controller } from '../player_controller';
 import { idle_state } from './idle_state';
-import { punch_state } from './punch_state';
 
 const { ccclass, property } = _decorator;
 
@@ -29,8 +28,11 @@ export class run_state implements player_state {
 
         player.v3_velocity.set(dir.x * player.run_speed * dt, 0, -dir.y * player.run_speed * dt)
 
-        if (player.char_ctrl) {
-            player.char_ctrl.move(player.v3_velocity)
+        player.character_controller.move(player.v3_velocity)
+        
+
+        if(player.node.getWorldPosition().y > 0.1){
+            player.node.setWorldPosition(player.node.getWorldPosition().x, 0, player.node.getWorldPosition().z)
         }
     }
 
@@ -39,7 +41,7 @@ export class run_state implements player_state {
             player.change_state(new idle_state())
         }
         if (player.can_punch()) {
-            player.play_punch_action(player.punch_action_state);
+            player.play_action(player.punch_action_state);
         }
     }
 

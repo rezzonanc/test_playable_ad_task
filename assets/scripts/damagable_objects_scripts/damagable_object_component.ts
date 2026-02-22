@@ -1,4 +1,5 @@
-import { _decorator, CCInteger, Color, Component, Material, math, MeshRenderer, Node, Quat, tween, Vec3 } from 'cc';
+import { _decorator, CCBoolean, CCInteger, Color, Component, Material, math, MeshRenderer, Node, Quat, tween, Vec3 } from 'cc';
+import { game_manager } from '../game_manager';
 const { ccclass, property } = _decorator;
 
 @ccclass('damagable_object_component')
@@ -11,6 +12,12 @@ export class damagable_object_component extends Component {
     private max_hp: number = 10
     private hp: number = 10
 
+    @property(CCInteger)
+    private cost_per_res: number = 1
+
+    @property(CCInteger)
+    private res_count_per_punch: number = 3
+    
     @property([Node])
     private damagable_meshes: Node[] = [];
 
@@ -18,6 +25,9 @@ export class damagable_object_component extends Component {
     private max_hit_angle_offset: number = 10
 
     private current_damage_stage: number = 0
+
+    @property(CCBoolean)
+    private redirect_on_kill: false
 
     protected onLoad(): void {
         this.hp = this.max_hp
@@ -27,10 +37,7 @@ export class damagable_object_component extends Component {
         }
     }
 
-    public damage_obj(damage: number, weapon_lvl: number, player_pos: Vec3){
-
-        if(weapon_lvl < this.access_lvl)
-        return
+    public damage_obj(damage: number, player_pos: Vec3){
 
         this.hp -= damage
 
@@ -48,36 +55,49 @@ export class damagable_object_component extends Component {
         this.flash_white()
 
         this.sway(player_pos)
+
+        for (let i = 0; i < this.res_count_per_punch; i++) {
+            game_manager.instance.spawn_dropped_resource(this.node.getWorldPosition(), this.cost_per_res)
+        }
     }
 
     private kill(){
-        tween(this.node)
+
+        const mesh_node = this.damagable_meshes[this.current_damage_stage]
+
+        tween(mesh_node)
         .to(0.25, {scale: new Vec3(0.3,0.3,0.3)}, {easing: "backIn"})
         .call(()=>{
+
+            if(this.redirect_on_kill)
+                game_manager.instance.redirect()
+            
             this.node.destroy()
         })
         .start()
     }
 
     private sway(player_pos: Vec3){
+        
+        const mesh_node = this.damagable_meshes[this.current_damage_stage]
 
         const dir = new Vec3()
-        Vec3.subtract(dir, player_pos, this.node.worldPosition)
+        Vec3.subtract(dir, player_pos, mesh_node.worldPosition)
 
         const angle_z = dir.x >= 0 ? this.max_hit_angle_offset : -this.max_hit_angle_offset
         const angle_x = dir.z >= 0 ? -this.max_hit_angle_offset : this.max_hit_angle_offset
 
-        const cur_rot = this.node.eulerAngles.clone()
+        const cur_rot = mesh_node.eulerAngles.clone()
 
         const hit_rot = new Vec3(cur_rot.x + angle_x, cur_rot.y, cur_rot.z + angle_z)
 
         const reset_rot = new Vec3(cur_rot.x - angle_x * 0.5, cur_rot.y, cur_rot.z - angle_z * 0.5)
 
-        tween(this.node)
-            .to(0.05, { eulerAngles: hit_rot }, { easing: 'sineOut' })
-            .to(0.1, { eulerAngles: reset_rot }, { easing: 'sineInOut' })
-            .to(0.05, { eulerAngles: cur_rot }, { easing: 'sineIn' })
-            .start()
+        tween(mesh_node)
+        .to(0.05, {eulerAngles: hit_rot}, {easing: 'sineOut'})
+        .to(0.1, {eulerAngles: reset_rot}, {easing: 'sineInOut'})
+        .to(0.05, {eulerAngles: cur_rot}, {easing: 'sineIn'})
+        .start()
     }
 
     private set_damagable_mesh_active(){

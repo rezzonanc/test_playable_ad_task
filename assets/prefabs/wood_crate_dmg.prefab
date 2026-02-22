@@ -448,7 +448,9 @@
       "__id__": 18
     },
     "access_lvl": 2,
-    "max_hp": 10,
+    "max_hp": 250,
+    "cost_per_res": 3,
+    "res_count_per_punch": 4,
     "damagable_meshes": [
       {
         "__id__": 2
@@ -460,6 +462,7 @@
         "__id__": 12
       }
     ],
+    "max_hit_angle_offset": 10,
     "_id": ""
   },
   {
@@ -520,13 +523,13 @@
     "_center": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0.5,
+      "y": 1.1,
       "z": 0
     },
     "_size": {
       "__type__": "cc.Vec3",
       "x": 1,
-      "y": 1,
+      "y": 3,
       "z": 1
     },
     "_id": ""

@@ -15,6 +15,7 @@ export class weapon_component extends Component {
     
     @property(Line)
     private trail: Line
+
     @property(Node)
     private trail_target_node: Node
     
@@ -48,6 +49,19 @@ export class weapon_component extends Component {
 
     public reset_trail(){
         this.trail.positions = []
+    }
+
+    public upgrade_weapon(){
+        this.cur_lvl++
+
+        for (let i = 0; i < this.weapon_per_level.length; i++) {
+            if (i == this.cur_lvl - 1){
+                this.weapon_per_level[i].active = true
+            }
+            else{
+                this.weapon_per_level[i].active = false
+            }
+        }
     }
 }
 
